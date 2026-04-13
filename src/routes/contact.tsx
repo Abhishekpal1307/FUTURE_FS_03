@@ -79,8 +79,8 @@ function ContactPage() {
               <div className="space-y-5 mb-8">
                 {[
                   { icon: MapPin, label: "Address", value: "123 Brew Street, Downtown, NY 10001" },
-                  { icon: Phone, label: "Phone", value: "(555) 123-4567" },
-                  { icon: Mail, label: "Email", value: "hello@urbanbrew.cafe" },
+                  { icon: Phone, label: "Phone", value: "+91 9555349309" },
+                  { icon: Mail, label: "Email", value: "abhi130703@gmail.com" },
                   { icon: Clock, label: "Hours", value: "Mon-Fri 7AM-9PM · Sat 8AM-10PM · Sun 8AM-8PM" },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-4">
