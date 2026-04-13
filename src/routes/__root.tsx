@@ -1,7 +1,9 @@
 import { Outlet, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { SplashScreen } from "@/components/SplashScreen";
 
 import appCss from "../styles.css?url";
 
@@ -52,8 +54,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  const [showSplash, setShowSplash] = useState(true);
+
   return (
     <>
+      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <Header />
       <main>
         <Outlet />
