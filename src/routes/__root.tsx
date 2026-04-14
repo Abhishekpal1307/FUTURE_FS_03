@@ -1,5 +1,6 @@
 import { Outlet, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { useState } from "react";
+import { Toaster } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ScrollToTop } from "@/components/ScrollToTop";
@@ -65,6 +66,7 @@ function RootComponent() {
       </main>
       <Footer />
       <ScrollToTop />
+      <Toaster position="top-right" richColors />
     </>
   );
 }
