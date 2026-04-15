@@ -22,9 +22,18 @@ const bookingSchema = z.object({
 export const submitContactForm = createServerFn({ method: "POST" })
   .inputValidator((input: z.infer<typeof contactSchema>) => contactSchema.parse(input))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { createClient } = await import("@supabase/supabase-js");
 
-    const { error } = await supabaseAdmin.from("contact_submissions").insert({
+    const supabaseUrl = process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = process.env.SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error("Missing Supabase configuration");
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    const { error } = await supabase.from("contact_submissions").insert({
       name: data.name,
       email: data.email,
       message: data.message,
@@ -32,31 +41,26 @@ export const submitContactForm = createServerFn({ method: "POST" })
 
     if (error) throw new Error("Failed to save submission");
 
-    // Send notification email via Supabase Edge Function or simple fetch
+    // Send notification email via Edge Function
     try {
-      const SUPABASE_URL = process.env.SUPABASE_URL;
-      const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-      if (SUPABASE_URL && SERVICE_KEY) {
-        await fetch(`${SUPABASE_URL}/functions/v1/send-notification`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${SERVICE_KEY}`,
-          },
-          body: JSON.stringify({
-            to: OWNER_EMAIL,
-            subject: `New Contact Form: ${data.name}`,
-            html: `
-              <h2>New Contact Form Submission</h2>
-              <p><strong>Name:</strong> ${data.name}</p>
-              <p><strong>Email:</strong> ${data.email}</p>
-              <p><strong>Message:</strong> ${data.message}</p>
-              <p><em>Received at ${new Date().toLocaleString()}</em></p>
-            `,
-          }),
-        });
-      }
+      await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          to: OWNER_EMAIL,
+          subject: `New Contact Form: ${data.name}`,
+          html: `
+            <h2>New Contact Form Submission</h2>
+            <p><strong>Name:</strong> ${data.name}</p>
+            <p><strong>Email:</strong> ${data.email}</p>
+            <p><strong>Message:</strong> ${data.message}</p>
+            <p><em>Received at ${new Date().toLocaleString()}</em></p>
+          `,
+        }),
+      });
     } catch (e) {
       console.error("Notification email failed:", e);
     }
@@ -67,9 +71,18 @@ export const submitContactForm = createServerFn({ method: "POST" })
 export const submitTableBooking = createServerFn({ method: "POST" })
   .inputValidator((input: z.infer<typeof bookingSchema>) => bookingSchema.parse(input))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { createClient } = await import("@supabase/supabase-js");
 
-    const { error } = await supabaseAdmin.from("table_bookings").insert({
+    const supabaseUrl = process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = process.env.SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error("Missing Supabase configuration");
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    const { error } = await supabase.from("table_bookings").insert({
       name: data.name,
       email: data.email,
       phone: data.phone || null,
@@ -82,33 +95,28 @@ export const submitTableBooking = createServerFn({ method: "POST" })
     if (error) throw new Error("Failed to save booking");
 
     try {
-      const SUPABASE_URL = process.env.SUPABASE_URL;
-      const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-      if (SUPABASE_URL && SERVICE_KEY) {
-        await fetch(`${SUPABASE_URL}/functions/v1/send-notification`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${SERVICE_KEY}`,
-          },
-          body: JSON.stringify({
-            to: OWNER_EMAIL,
-            subject: `New Table Booking: ${data.name}`,
-            html: `
-              <h2>New Table Booking</h2>
-              <p><strong>Name:</strong> ${data.name}</p>
-              <p><strong>Email:</strong> ${data.email}</p>
-              <p><strong>Phone:</strong> ${data.phone || "Not provided"}</p>
-              <p><strong>Date:</strong> ${data.booking_date}</p>
-              <p><strong>Time:</strong> ${data.booking_time}</p>
-              <p><strong>Guests:</strong> ${data.guests}</p>
-              <p><strong>Special Requests:</strong> ${data.message || "None"}</p>
-              <p><em>Received at ${new Date().toLocaleString()}</em></p>
-            `,
-          }),
-        });
-      }
+      await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${supabaseAnonKey}`,
+        },
+        body: JSON.stringify({
+          to: OWNER_EMAIL,
+          subject: `New Table Booking: ${data.name}`,
+          html: `
+            <h2>New Table Booking</h2>
+            <p><strong>Name:</strong> ${data.name}</p>
+            <p><strong>Email:</strong> ${data.email}</p>
+            <p><strong>Phone:</strong> ${data.phone || "Not provided"}</p>
+            <p><strong>Date:</strong> ${data.booking_date}</p>
+            <p><strong>Time:</strong> ${data.booking_time}</p>
+            <p><strong>Guests:</strong> ${data.guests}</p>
+            <p><strong>Special Requests:</strong> ${data.message || "None"}</p>
+            <p><em>Received at ${new Date().toLocaleString()}</em></p>
+          `,
+        }),
+      });
     } catch (e) {
       console.error("Notification email failed:", e);
     }
