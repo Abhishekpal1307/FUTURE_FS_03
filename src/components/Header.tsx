@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Coffee, Menu, X } from "lucide-react";
+import { Coffee, Menu, X, Shield } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const navLinks = [
