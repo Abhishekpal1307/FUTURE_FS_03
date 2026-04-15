@@ -61,6 +61,13 @@ export function Header() {
           >
             Book a Table
           </Link>
+          <Link
+            to="/admin"
+            className="ml-2 p-2 rounded-lg text-primary-foreground/40 hover:text-accent hover:bg-primary-foreground/5 transition"
+            title="Admin Portal"
+          >
+            <Shield className="w-4 h-4" />
+          </Link>
         </nav>
 
         <button
