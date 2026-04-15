@@ -49,6 +49,7 @@ export type Database = {
           message: string | null
           name: string
           phone: string | null
+          status: string
         }
         Insert: {
           booking_date: string
@@ -60,6 +61,7 @@ export type Database = {
           message?: string | null
           name: string
           phone?: string | null
+          status?: string
         }
         Update: {
           booking_date?: string
@@ -71,6 +73,7 @@ export type Database = {
           message?: string | null
           name?: string
           phone?: string | null
+          status?: string
         }
         Relationships: []
       }
