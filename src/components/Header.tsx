@@ -104,6 +104,12 @@ export function Header() {
           >
             Book a Table
           </Link>
+          <Link
+            to="/admin"
+            className="flex items-center gap-2 px-4 py-3 text-primary-foreground/50 hover:text-accent transition-colors rounded-lg hover:bg-primary-foreground/5 text-sm"
+          >
+            <Shield className="w-4 h-4" /> Admin
+          </Link>
         </nav>
       </motion.div>
     </motion.header>
