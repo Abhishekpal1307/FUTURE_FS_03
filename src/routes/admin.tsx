@@ -2,11 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { getContactSubmissions, getTableBookings } from "@/utils/admin.functions";
+import { getContactSubmissions, getTableBookings, updateBookingStatus } from "@/utils/admin.functions";
+import { useServerFn } from "@tanstack/react-start";
 import {
   Mail, Calendar, Users, MessageSquare, Clock, Phone,
   Shield, ChevronDown, ChevronUp, Search, RefreshCw,
-} from "lucide-react";
+  CheckCircle2, XCircle, Loader2,
+}from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
