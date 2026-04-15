@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminDashboard,
 });
 
-const ADMIN_PASSWORD = "urbanbrew2024";
+const ADMIN_PASSWORD = "Abhi@123";
 
 interface ContactSubmission {
   id: string;
