@@ -2,11 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { AnimatedSection } from "@/components/AnimatedSection";
-import { getContactSubmissions, getTableBookings } from "@/utils/admin.functions";
+import { getContactSubmissions, getTableBookings, updateBookingStatus } from "@/utils/admin.functions";
+import { useServerFn } from "@tanstack/react-start";
 import {
   Mail, Calendar, Users, MessageSquare, Clock, Phone,
   Shield, ChevronDown, ChevronUp, Search, RefreshCw,
-} from "lucide-react";
+  CheckCircle2, XCircle, Loader2,
+}from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -38,6 +40,7 @@ interface TableBooking {
   guests: number;
   message: string | null;
   created_at: string;
+  status: string;
 }
 
 function AdminDashboard() {
@@ -189,7 +192,7 @@ function DashboardContent() {
         ) : tab === "contacts" ? (
           <ContactList contacts={filteredContacts} />
         ) : (
-          <BookingList bookings={filteredBookings} />
+          <BookingList bookings={filteredBookings} onStatusUpdate={fetchData} />
         )}
       </div>
     </div>
@@ -254,7 +257,22 @@ function ContactList({ contacts }: { contacts: ContactSubmission[] }) {
   );
 }
 
-function BookingList({ bookings }: { bookings: TableBooking[] }) {
+function BookingList({ bookings, onStatusUpdate }: { bookings: TableBooking[]; onStatusUpdate: () => void }) {
+  const [processingId, setProcessingId] = useState<string | null>(null);
+  const updateStatusFn = useServerFn(updateBookingStatus);
+
+  const handleStatusUpdate = async (id: string, status: "approved" | "rejected") => {
+    setProcessingId(id);
+    try {
+      await updateStatusFn({ data: { id, status } });
+      onStatusUpdate();
+    } catch (e) {
+      console.error("Failed to update status:", e);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   if (bookings.length === 0) {
     return (
       <div className="glass-card p-12 text-center">
@@ -270,6 +288,13 @@ function BookingList({ bookings }: { bookings: TableBooking[] }) {
         const bookingDate = new Date(b.booking_date + "T00:00:00");
         const isPast = bookingDate < new Date(new Date().toDateString());
         const isToday = b.booking_date === new Date().toISOString().split("T")[0];
+        const isProcessing = processingId === b.id;
+
+        const statusBadge = b.status === "approved"
+          ? <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-semibold flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> APPROVED</span>
+          : b.status === "rejected"
+          ? <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-semibold flex items-center gap-1"><XCircle className="w-3 h-3" /> REJECTED</span>
+          : <span className="text-[10px] px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-semibold">PENDING</span>;
 
         return (
           <motion.div
@@ -285,8 +310,9 @@ function BookingList({ bookings }: { bookings: TableBooking[] }) {
                   <Calendar className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <p className="font-medium text-sm">{b.name}</p>
+                    {statusBadge}
                     {isToday && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">TODAY</span>}
                     {isPast && <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">PAST</span>}
                   </div>
@@ -301,6 +327,26 @@ function BookingList({ bookings }: { bookings: TableBooking[] }) {
             </div>
             {b.message && (
               <p className="text-xs text-muted-foreground mt-2 pl-12">💬 {b.message}</p>
+            )}
+            {b.status === "pending" && (
+              <div className="flex gap-2 mt-3 pl-12">
+                <button
+                  onClick={() => handleStatusUpdate(b.id, "approved")}
+                  disabled={isProcessing}
+                  className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-green-600 text-white font-medium hover:bg-green-700 transition disabled:opacity-50"
+                >
+                  {isProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleStatusUpdate(b.id, "rejected")}
+                  disabled={isProcessing}
+                  className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition disabled:opacity-50"
+                >
+                  {isProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : <XCircle className="w-3 h-3" />}
+                  Reject
+                </button>
+              </div>
             )}
           </motion.div>
         );
