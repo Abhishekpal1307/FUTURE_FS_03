@@ -1,8 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-function getSupabaseClient() {
-  const { createClient } = require("@supabase/supabase-js");
+async function getSupabaseClient() {
+  const { createClient } = await import("@supabase/supabase-js");
   const supabaseUrl = process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL;
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const anonKey = process.env.SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
@@ -13,7 +13,7 @@ function getSupabaseClient() {
 
 export const getContactSubmissions = createServerFn({ method: "GET" })
   .handler(async () => {
-    const { supabase } = getSupabaseClient();
+    const { supabase } = await getSupabaseClient();
     const { data, error } = await supabase
       .from("contact_submissions")
       .select("*")
@@ -24,7 +24,7 @@ export const getContactSubmissions = createServerFn({ method: "GET" })
 
 export const getTableBookings = createServerFn({ method: "GET" })
   .handler(async () => {
-    const { supabase } = getSupabaseClient();
+    const { supabase } = await getSupabaseClient();
     const { data, error } = await supabase
       .from("table_bookings")
       .select("*")
@@ -42,7 +42,7 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
     return schema.parse(input);
   })
   .handler(async ({ data }) => {
-    const { supabase, supabaseUrl, anonKey } = getSupabaseClient();
+    const { supabase, supabaseUrl, anonKey } = await getSupabaseClient();
 
     // Get booking details first
     const { data: booking, error: fetchError } = await supabase
