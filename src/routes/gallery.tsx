@@ -9,6 +9,9 @@ import gallery3 from "@/assets/gallery-3.jpg";
 import gallery4 from "@/assets/gallery-4.jpg";
 import gallery5 from "@/assets/gallery-5.jpg";
 import gallery6 from "@/assets/gallery-6.jpg";
+import gallery7 from "@/assets/gallery-7.jpg";
+import gallery8 from "@/assets/gallery-8.jpg";
+import gallery9 from "@/assets/gallery-9.jpg";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -29,6 +32,9 @@ const images = [
   { src: gallery4, alt: "Iced coffee drinks" },
   { src: gallery5, alt: "Barista making latte art" },
   { src: gallery6, alt: "Desserts" },
+  { src: gallery7, alt: "Cozy café interior" },
+  { src: gallery8, alt: "Specialty coffee beans" },
+  { src: gallery9, alt: "Chocolate brownie with ice cream" },
 ];
 
 function GalleryPage() {

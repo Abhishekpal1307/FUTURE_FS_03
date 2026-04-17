@@ -56,7 +56,7 @@ export function Footer() {
           <div>
             <h4 className="font-heading font-semibold mb-4 text-accent">Contact</h4>
             <div className="text-sm text-primary-foreground/60 space-y-3">
-              <p className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5 text-accent shrink-0" /> 123 Brew Street, Downtown, NY 10001</p>
+              <p className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5 text-accent shrink-0" /> 12 Lodhi Road, Near Lodhi Garden, New Delhi 110003, India</p>
               <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-accent shrink-0" /> +91 9555349309</p>
               <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-accent shrink-0" /> abhi130703@gmail.com</p>
             </div>
