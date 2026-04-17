@@ -67,7 +67,7 @@ function ContactPage() {
               <h2 className="font-heading text-2xl font-bold mb-6">Visit Us</h2>
               <div className="space-y-5 mb-8">
                 {[
-                  { icon: MapPin, label: "Address", value: "123 Brew Street, Downtown, NY 10001" },
+                  { icon: MapPin, label: "Address", value: "12 Lodhi Road, Near Lodhi Garden, New Delhi 110003, India" },
                   { icon: Phone, label: "Phone", value: "+91 9555349309" },
                   { icon: Mail, label: "Email", value: "abhi130703@gmail.com" },
                   { icon: Clock, label: "Hours", value: "Mon-Fri 7AM-9PM · Sat 8AM-10PM · Sun 8AM-8PM" },
@@ -87,7 +87,7 @@ function ContactPage() {
               <div className="rounded-2xl overflow-hidden shadow-lg">
                 <iframe
                   title="Urban Brew Café Location"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9663095343008!2d-74.00425878428698!3d40.74076794379132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259bf5c1654f3%3A0xc80f9cfce5383d5d!2sGoogle!5e0!3m2!1sen!2sus!4v1620120000000"
+                  src="https://www.google.com/maps?q=Lodhi+Garden,+New+Delhi,+India&output=embed"
                   width="100%"
                   height="280"
                   style={{ border: 0 }}
