@@ -1,6 +1,6 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Coffee, Menu, X } from "lucide-react";
+import { Coffee, Menu, X, Shield } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const navLinks = [
@@ -27,7 +27,12 @@ export function Header() {
   }, []);
 
   const { scrollY } = useScroll();
-  const headerBg = useTransform(scrollY, [0, 100], ["rgba(30,41,59,0)", "rgba(30,41,59,0.97)"]);
+  const isHome = location.pathname === "/";
+  const headerBg = useTransform(
+    scrollY,
+    [0, 100],
+    isHome ? ["rgba(30,41,59,0)", "rgba(30,41,59,0.97)"] : ["rgba(30,41,59,0.97)", "rgba(30,41,59,0.97)"]
+  );
   const headerPy = useTransform(scrollY, [0, 100], ["1.25rem", "0.75rem"]);
 
   return (
@@ -60,6 +65,13 @@ export function Header() {
             className="ml-3 px-5 py-2 rounded-lg bg-accent text-accent-foreground text-sm font-semibold hover:brightness-110 transition"
           >
             Book a Table
+          </Link>
+          <Link
+            to="/admin"
+            className="ml-2 p-2 rounded-lg text-primary-foreground/40 hover:text-accent hover:bg-primary-foreground/5 transition"
+            title="Admin Portal"
+          >
+            <Shield className="w-4 h-4" />
           </Link>
         </nav>
 
@@ -96,6 +108,12 @@ export function Header() {
             className="mt-2 px-5 py-3 rounded-lg bg-accent text-accent-foreground text-sm font-semibold text-center"
           >
             Book a Table
+          </Link>
+          <Link
+            to="/admin"
+            className="flex items-center gap-2 px-4 py-3 text-primary-foreground/50 hover:text-accent transition-colors rounded-lg hover:bg-primary-foreground/5 text-sm"
+          >
+            <Shield className="w-4 h-4" /> Admin
           </Link>
         </nav>
       </motion.div>
