@@ -84,17 +84,25 @@ function ContactPage() {
                 ))}
               </div>
 
-              <div className="rounded-2xl overflow-hidden shadow-lg">
+              <div className="rounded-2xl overflow-hidden shadow-lg border border-border">
                 <iframe
-                  title="Urban Brew Café Location"
-                  src="https://www.google.com/maps?q=Lodhi+Garden,+New+Delhi,+India&output=embed"
+                  title="Urban Brew Café Location — Lodhi Garden, New Delhi"
+                  src="https://maps.google.com/maps?q=Lodhi%20Garden%2C%20New%20Delhi%2C%20India&t=m&z=15&output=embed&iwloc=near"
                   width="100%"
-                  height="280"
-                  style={{ border: 0 }}
+                  height="300"
+                  style={{ border: 0, display: "block" }}
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Lodhi+Garden+New+Delhi"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-center text-xs py-2 bg-card text-accent hover:underline"
+                >
+                  Open in Google Maps →
+                </a>
               </div>
             </AnimatedSection>
           </div>
