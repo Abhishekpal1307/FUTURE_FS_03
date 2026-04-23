@@ -18,6 +18,12 @@ export const Route = createRootRoute({
       { name: "author", content: "Urban Brew Café" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { property: "og:title", content: "Urban Brew Café" },
+      { name: "twitter:title", content: "Urban Brew Café" },
+      { property: "og:description", content: "Artisan coffee, fresh pastries, and a warm atmosphere in downtown." },
+      { name: "twitter:description", content: "Artisan coffee, fresh pastries, and a warm atmosphere in downtown." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/31811d2c-9219-4abd-a0a0-2b8f6a25b8fe/id-preview-770d6d5a--98690213-681d-4cd0-ad5c-48dcc0a39fa5.lovable.app-1776938575857.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/31811d2c-9219-4abd-a0a0-2b8f6a25b8fe/id-preview-770d6d5a--98690213-681d-4cd0-ad5c-48dcc0a39fa5.lovable.app-1776938575857.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
