@@ -62,10 +62,61 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
     if (updateError) throw new Error("Failed to update booking status");
 
     // Send email notification to customer
-    const statusText = data.status === "approved" ? "Approved ✅" : "Rejected ❌";
-    const statusMessage = data.status === "approved"
-      ? `We are pleased to confirm your table booking at Urban Brew Café! We look forward to seeing you on ${booking.booking_date} at ${booking.booking_time}.`
-      : `Unfortunately, we are unable to accommodate your booking request for ${booking.booking_date} at ${booking.booking_time}. Please contact us to discuss alternative arrangements.`;
+    const isApproved = data.status === "approved";
+    const subject = isApproved
+      ? `🎉 Welcome to Urban Brew — Your Table is Confirmed!`
+      : `Update on Your Booking — Urban Brew Café`;
+
+    const html = isApproved ? `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#ffffff;">
+        <div style="background:linear-gradient(135deg,#1E293B,#334155);padding:32px 24px;text-align:center;">
+          <h1 style="color:#F59E0B;margin:0;font-size:26px;">Urban Brew Café</h1>
+          <p style="color:#e2e8f0;margin:8px 0 0;font-size:14px;">Welcome to the family ☕</p>
+        </div>
+        <div style="padding:28px 24px;">
+          <h2 style="color:#1E293B;margin:0 0 12px;">Hi ${booking.name}, your booking is accepted! ✅</h2>
+          <p style="color:#475569;line-height:1.6;">
+            We're delighted to welcome you to Urban Brew Café. Your table has been confirmed
+            and our team is already looking forward to crafting a memorable experience for you.
+          </p>
+          <div style="background:#FEF3C7;border-left:4px solid #F59E0B;border-radius:8px;padding:16px;margin:20px 0;">
+            <p style="margin:4px 0;color:#1E293B;"><strong>📅 Date:</strong> ${booking.booking_date}</p>
+            <p style="margin:4px 0;color:#1E293B;"><strong>⏰ Time:</strong> ${booking.booking_time}</p>
+            <p style="margin:4px 0;color:#1E293B;"><strong>👥 Guests:</strong> ${booking.guests}</p>
+          </div>
+          <p style="color:#475569;line-height:1.6;">
+            📍 12 Lodhi Road, Near Lodhi Garden, New Delhi<br/>
+            Need to make changes? Just reply to this email or call us.
+          </p>
+          <p style="color:#1E293B;margin-top:24px;">See you soon,<br/><strong>The Urban Brew Team</strong></p>
+        </div>
+        <div style="background:#f8fafc;padding:16px;text-align:center;color:#64748b;font-size:12px;">
+          Urban Brew Café · 📞 +91 9555349309
+        </div>
+      </div>
+    ` : `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#ffffff;">
+        <div style="background:#1E293B;padding:28px 24px;text-align:center;">
+          <h1 style="color:#F59E0B;margin:0;font-size:24px;">Urban Brew Café</h1>
+        </div>
+        <div style="padding:28px 24px;">
+          <h2 style="color:#1E293B;margin:0 0 12px;">Hi ${booking.name},</h2>
+          <p style="color:#475569;line-height:1.6;">
+            Thank you for choosing Urban Brew Café. Unfortunately, we're unable to accommodate
+            your booking for <strong>${booking.booking_date} at ${booking.booking_time}</strong>
+            at this time — we're fully booked or temporarily unavailable.
+          </p>
+          <p style="color:#475569;line-height:1.6;">
+            We'd love to host you on another date. Please call us at
+            <strong>+91 9555349309</strong> and we'll find the perfect slot for you.
+          </p>
+          <p style="color:#1E293B;margin-top:24px;">With apologies,<br/><strong>The Urban Brew Team</strong></p>
+        </div>
+        <div style="background:#f8fafc;padding:16px;text-align:center;color:#64748b;font-size:12px;">
+          Urban Brew Café · 📞 +91 9555349309
+        </div>
+      </div>
+    `;
 
     try {
       await fetch(`${supabaseUrl}/functions/v1/send-notification`, {
@@ -74,23 +125,7 @@ export const updateBookingStatus = createServerFn({ method: "POST" })
           "Content-Type": "application/json",
           Authorization: `Bearer ${anonKey}`,
         },
-        body: JSON.stringify({
-          to: booking.email,
-          subject: `Booking ${statusText} — Urban Brew Café`,
-          html: `
-            <div style="font-family:Arial,sans-serif;max-width:500px;margin:0 auto;padding:20px;">
-              <h2 style="color:#1E293B;">Booking ${statusText}</h2>
-              <p>Dear ${booking.name},</p>
-              <p>${statusMessage}</p>
-              <div style="background:#f8fafc;border-radius:8px;padding:16px;margin:16px 0;">
-                <p style="margin:4px 0;"><strong>Date:</strong> ${booking.booking_date}</p>
-                <p style="margin:4px 0;"><strong>Time:</strong> ${booking.booking_time}</p>
-                <p style="margin:4px 0;"><strong>Guests:</strong> ${booking.guests}</p>
-              </div>
-              <p style="color:#64748b;font-size:12px;">Urban Brew Café<br>📞 +91 9555349309</p>
-            </div>
-          `,
-        }),
+        body: JSON.stringify({ to: booking.email, subject, html }),
       });
     } catch (e) {
       console.error("Customer email notification failed:", e);
